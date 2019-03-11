@@ -1,9 +1,8 @@
 # Small-math-bot
-A little telegram bot done with Gradle to learn how to use this tecnology
+A little telegram bot done with ~Gradle~ Maven to learn how to use this tecnology
 
 ## Goals
 I made this little bot just to understand how a telegram bot can work using Java. This isn't a life changing bot but it's interesing at least
 
 ## To-dos
-1. Deploy this bot so it doesn't use my computer as a server
-2. Make my own String-to-math-to-string method, instead of using a Javascript engine
+1. Make my own String-to-math-to-string method, instead of using a Javascript engine
