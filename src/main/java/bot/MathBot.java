@@ -2,7 +2,6 @@ package bot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -30,8 +29,8 @@ public class MathBot extends TelegramLongPollingBot {
 			//This handles usual 1-by-1 queries
 			messageTextReceived = update.getMessage().getText();
 			chatId = update.getMessage().getChatId();
-		}
-
+		}	
+		
 		//Here we summon the Javascript maths engine
 		ScriptEngineManager mgr = new ScriptEngineManager();
 		ScriptEngine engine = mgr.getEngineByName("JavaScript");
@@ -49,21 +48,22 @@ public class MathBot extends TelegramLongPollingBot {
 					+ " A ^ B";
 		} else {
 			//This is where the magic happens
-			if(messageTextReceived.contains("^")) {
+			String operation = messageTextReceived;
+			if(operation.contains("^")) {
 				try {
 					//As Javascript doesn't have a String to power converter, I made one myselg
 					//TODO: Do the same with all operators
-					messageTextReceived = this.toPower(messageTextReceived);
+					operation = this.toPower(operation);
 				} catch(Exception e) {
 					e.printStackTrace();
-					messageTextReceived = "";
+					operation = "";
 				}
 			}
 			//Here we convert whatever result we will get in a double
-			messageTextReceived = "1.0 * (" + messageTextReceived.replaceAll(",", ".") + ")";
+			operation = "1.0 * (" + operation.replaceAll(",", ".") + ")";
 			try {
 				//We evaluate the string and try to make it a number
-				text = String.valueOf((Double) engine.eval(messageTextReceived));
+				text = String.valueOf((Double) engine.eval(operation));
 			} catch (ScriptException e1) {
 				Double number = Math.random() * 100;
 				if(number >= 99) {
@@ -73,10 +73,10 @@ public class MathBot extends TelegramLongPollingBot {
 					//This is your usual "please type right" message
 					text = "Sorry, I couldn't understand you";
 				}
-
+				
 			}
 		}
-
+		
 		if(text.equals("NaN")) {
 			text = "Sorry, I couldn't understand you";
 		}
@@ -89,9 +89,10 @@ public class MathBot extends TelegramLongPollingBot {
 			InlineQueryResultArticle res = new InlineQueryResultArticle();
 			res.setId("0");
 			res.setTitle(text);
+			res.setDescription(messageTextReceived);
 			InputTextMessageContent itext = new InputTextMessageContent();
 			itext.disableWebPagePreview();
-			itext.setMessageText(text);
+			itext.setMessageText(messageTextReceived + " = " + text);
 			res.setInputMessageContent(itext);
 			results.add(res);
 			ans.setResults(results);
@@ -108,11 +109,7 @@ public class MathBot extends TelegramLongPollingBot {
 			} catch (TelegramApiException e) {
 				e.printStackTrace();
 			}
-		}
-
-
-
-
+		}			
 	}
 
 
@@ -121,7 +118,7 @@ public class MathBot extends TelegramLongPollingBot {
 		Double base = Double.valueOf(values[0].trim());
 		Double power = Double.valueOf(values[1].trim());
 		Double res = Math.pow(base, power);
-		return String.valueOf(res);
+		return String.valueOf(res);		
 	}
 
 	@Override
@@ -131,6 +128,6 @@ public class MathBot extends TelegramLongPollingBot {
 
 	@Override
 	public String getBotToken() {
-		//Here goes the token;
+		return "784773583:AAG8sQyvcDucJJuZp5inExtgI6oLZO6YWWE";
 	}
 }
